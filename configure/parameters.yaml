@@ -1,0 +1,17 @@
+Data:
+  classes:
+  - person
+  data_path: qwerqwerqwerqwerqwerqwer
+  exposure: 1.5
+  flip: 1
+  hue: 0.1
+  img_size: !!python/tuple
+  - 1280
+  - 768
+  jitter_x: 0.3
+  jitter_y: 0.3
+  saturation: 1.5
+Net:
+  epochs: 100
+  lr: 0.001
+  weight_decay: 0.1
