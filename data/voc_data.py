@@ -4,13 +4,13 @@ import os
 import numpy as np
 from tqdm import tqdm
 
-from data import HandleData
+from data import DataBases
 
 
-class DetectionData(HandleData):
+class VocFormatData(DataBases):
 
     def __init__(self, data_path, classes, prepare_func, img_file='trainval'):
-        super(DetectionData, self).__init__(data_path)
+        super(VocFormatData, self).__init__(data_path)
         self.classes = classes
         self.classes_num = len(classes)
         self.prepare_func = prepare_func
@@ -39,8 +39,8 @@ class DetectionData(HandleData):
 
 
 if __name__ == '__main__':
-    data_path = '/home/lintaowx/datasets/sports-training-data/player_detection/training_dataset'
-    data_set = DetectionData(data_path, ['person'], None, img_file='train_freed_2k')
+    data_path = '~/data/object/voc/VOCdevkit/VOC2012'
+    data_set = VocFormatData(data_path, ['person'], None, img_file='train_freed_2k')
     from torch.utils.data import DataLoader
 
     dataloader = DataLoader(data_set, 32, shuffle=False, num_workers=1, collate_fn=data_set.collate_fn)

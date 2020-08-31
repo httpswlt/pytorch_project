@@ -6,6 +6,7 @@ import random
 
 import cv2
 import numpy as np
+from .utils import fip, rand
 
 
 class ImageFactory:
@@ -113,10 +114,10 @@ class ImageFactory:
         hue = random.uniform(-self.hue, self.hue)
 
         saturation = random.uniform(1, self.saturation)
-        saturation = saturation if self.__rand() % 2 else 1. / saturation
+        saturation = saturation if rand() % 2 else 1. / saturation
 
         exposure = random.uniform(1, self.exposure)
-        exposure = exposure if self.__rand() % 2 else 1. / exposure
+        exposure = exposure if rand() % 2 else 1. / exposure
 
         img = self.distort_image(img, hue, saturation, exposure)
         return img
@@ -153,13 +154,14 @@ class ImageFactory:
 
         :param img:
         :param flip_code:   must in the [-1, 0, 1].
+        :param targets:
         :return:    random to flip image via the flip_code
         """
         assert self.flip is not None
-        flip = self.__rand() % 2
+        flip = rand() % 2
         if flip:
             flip_code = random.sample(flip_code, 1)[0]
-            img = self.__fip(img, flip_code)
+            img = fip(img, flip_code)
             if targets is not None:
                 nh, nw, img_channel = img.shape
                 if flip_code == 1:
@@ -177,9 +179,33 @@ class ImageFactory:
         return img
 
     @staticmethod
-    def __fip(img, flip_code):
-        return cv2.flip(img, flipCode=flip_code)
+    def pca_jitter(img):
+        """
 
-    @staticmethod
-    def __rand():
-        return int(random.random() * 32767)
+        :param img:
+        :return:
+        """
+
+        img_size = img.size / 3
+        print(img.size, img_size)
+        img1 = img.reshape(int(img_size), 3)
+        img1 = np.transpose(img1)
+        img_cov = np.cov([img1[0], img1[1], img1[2]])
+
+        lamda, p = np.linalg.eig(img_cov)
+
+        p = np.transpose(p)
+
+        alpha1 = random.normalvariate(0, 0.2)
+        alpha2 = random.normalvariate(0, 0.2)
+        alpha3 = random.normalvariate(0, 0.2)
+
+        v = np.transpose((alpha1 * lamda[0], alpha2 * lamda[1], alpha3 * lamda[2]))
+        add_num = np.dot(p, v)
+
+        img2 = np.array([img[:, :, 0] + add_num[0], img[:, :, 1] + add_num[1], img[:, :, 2] + add_num[2]])
+
+        img2 = np.swapaxes(img2, 0, 2)
+        img2 = np.swapaxes(img2, 0, 1)
+
+        return img2
