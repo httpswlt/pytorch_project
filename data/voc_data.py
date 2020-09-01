@@ -39,8 +39,15 @@ class VocFormatData(DataBases):
 
 
 if __name__ == '__main__':
-    data_path = '~/data/object/voc/VOCdevkit/VOC2012'
-    data_set = VocFormatData(data_path, ['person'], None, img_file='train_freed_2k')
+    # data_path = '~/data/object/voc/VOCdevkit/VOC2012'
+    data_path = '~/datasets/VOC/VOCdevkit/VOC2007'
+    classes = (
+        'aeroplane', 'bicycle', 'bird', 'boat',
+        'bottle', 'bus', 'car', 'cat', 'chair',
+        'cow', 'diningtable', 'dog', 'horse',
+        'motorbike', 'person', 'pottedplant',
+        'sheep', 'sofa', 'train', 'tvmonitor')
+    data_set = VocFormatData(data_path, classes, None, img_file='trainval')
     from torch.utils.data import DataLoader
 
     dataloader = DataLoader(data_set, 32, shuffle=False, num_workers=1, collate_fn=data_set.collate_fn)

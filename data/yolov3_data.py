@@ -3,11 +3,11 @@ import cv2
 import numpy as np
 import torch
 
-from data import DetectionData
+from data import VocFormatData
 from common.utils import parse_xml, normalization_coordinate, constrain_coordinate
 
 
-class Yolov3Data(DetectionData):
+class Yolov3Data(VocFormatData):
     def __init__(self, parameters, prepare_func, index_file='trainval'):
         data_path = parameters.get('data_path')
         classes = parameters.get('classes')
@@ -15,6 +15,11 @@ class Yolov3Data(DetectionData):
         super(Yolov3Data, self).__init__(data_path, classes, prepare_func, img_file=index_file)
 
     def __getitem__(self, item):
+        """
+
+        :param item:
+        :return:  img, target [x, y, w, h]
+        """
         img = cv2.imread(self.images[item])
         targets = parse_xml(self.targets[item], self.classes)
         if self.prepare_func:
@@ -44,8 +49,20 @@ class Yolov3Data(DetectionData):
 
 
 if __name__ == '__main__':
-    data_path = '/home/lintaowx/datasets/sports-training-data/player_detection/training_dataset'
-    data_set = Yolov3Data(data_path, ['person'], None, index_file='train_freed_2k')
+    data_path = '/home/lintaowx/datasets/VOC/VOCdevkit/VOC2007'
+    classes = (
+        'aeroplane', 'bicycle', 'bird', 'boat',
+        'bottle', 'bus', 'car', 'cat', 'chair',
+        'cow', 'diningtable', 'dog', 'horse',
+        'motorbike', 'person', 'pottedplant',
+        'sheep', 'sofa', 'train', 'tvmonitor')
+    parameters = {
+        'data_path': data_path,
+        'classes': classes,
+        'img_size':  (640, 640)
+    }
+    data_set = Yolov3Data(parameters, None)
+
     from torch.utils.data import DataLoader
 
     dataloader = DataLoader(data_set, 32, shuffle=False, num_workers=1, collate_fn=data_set.collate_fn)
