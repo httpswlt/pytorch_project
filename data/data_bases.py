@@ -2,7 +2,7 @@
 from torch.utils.data import Dataset
 
 
-class HandleData(Dataset):
+class DataBases(Dataset):
     def __init__(self, data_path):
-        super(HandleData, self).__init__()
+        super(DataBases, self).__init__()
         self.data_path = data_path
