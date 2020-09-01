@@ -5,14 +5,14 @@ import sys
 
 sys.path.insert(0, './')
 
-from backbone import Yolov3BackBone
+from backbone import Darknet
 from common import read_yaml
 from data import PrepareDate
 from data import Yolov3Data
-from header import YOLOHeader
+from header import Yolov3Header
 from training import Yolov3Detecor
 
-net_yaml = './configure/net.yaml'
+net_yaml = './config/net.yaml'
 data_path = '/home/lintaowx/datasets/sports-training-data/player_detection/training_dataset'
 net = read_yaml(net_yaml)
 data = read_yaml(net['data_yaml'])

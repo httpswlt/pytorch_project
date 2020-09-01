@@ -16,7 +16,7 @@ class DataFrame:
 
         self.configure_path = path
         if self.configure_path is None:
-            self.configure_path = os.path.join(os.path.dirname(__file__), './configure/parameters.yaml')
+            self.configure_path = os.path.join(os.path.dirname(__file__), './config/parameters.yaml')
 
         self.data_parameters = OrderedDict(
             hue=0.1,

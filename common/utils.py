@@ -307,6 +307,6 @@ def voc_ap(rec, prec, use_07_metric=False):
 
 
 if __name__ == '__main__':
-    path = '../configure/net.yaml'
+    path = '../config/net.yaml'
     temp = read_yaml(path)
     print(temp)

@@ -1,5 +1,5 @@
 # yolov3 training
-data_yaml: ./configure/data.yaml
+data_yaml: ./config/data.yaml
 classes_num: 1
 epochs: 10000
 ignore_thres_first_loss: 0.7
