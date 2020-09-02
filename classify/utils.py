@@ -69,7 +69,7 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 
-def validate(val_loader, model, criterion, gpu_id):
+def validate(val_loader, model, criterion, cude=True):
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
     top1 = AverageMeter('Acc@1', ':6.2f')
@@ -85,9 +85,9 @@ def validate(val_loader, model, criterion, gpu_id):
     with torch.no_grad():
         end = time.time()
         for i, (images, target) in enumerate(val_loader):
-            if gpu_id is not None:
-                images = images.cuda(gpu_id, non_blocking=True)
-            target = target.cuda(gpu_id, non_blocking=True)
+            if cude:
+                images = images.cuda()
+                target = target.cuda()
 
             # compute output
             output = model(images)

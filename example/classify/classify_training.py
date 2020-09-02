@@ -8,7 +8,7 @@ import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.parallel
 import torch.optim
-from torch.utils.data import distributed, DataLoader
+from torch.utils.data import DataLoader
 
 from classify.datasets import load_imagenet_data
 from classify.utils import validate
@@ -66,7 +66,7 @@ def run(config):
         # train for per epoch
         print('Epoch: [{}/{}], Lr: {:.8f}'.format(epoch, config['epochs'], lr))
         # evaluate on validation set
-        acc1, acc5 = validate(val_loader, model, criterion, gpu_id)
+        acc1, acc5 = validate(val_loader, model, criterion)
         if config['record']:
             with open('record.log', 'a') as f:
                 f.write('Epoch {}, lr {:.8f}, loss: {:.8f}, Acc@1 {:.8f}, Acc5@ {:.8f} \n'.
