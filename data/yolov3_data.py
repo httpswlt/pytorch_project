@@ -49,7 +49,7 @@ class Yolov3Data(VocFormatData):
 
 
 if __name__ == '__main__':
-    data_path = '/home/lintaowx/datasets/VOC/VOCdevkit/VOC2007'
+    data_path = '/home/lintaowx/data/VOCdevkit/VOC2007'
     classes = (
         'aeroplane', 'bicycle', 'bird', 'boat',
         'bottle', 'bus', 'car', 'cat', 'chair',
