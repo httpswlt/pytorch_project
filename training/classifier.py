@@ -32,6 +32,8 @@ class Classifier(BaseTraining):
         
         # switch to train mode
         self.model.train()
+        if self.cuda:
+            self.model.cuda()
         
         loss = 0
         end = time.time()
@@ -47,7 +49,7 @@ class Classifier(BaseTraining):
             loss = self.criteria(output, target)
             
             # measure accuracy and record loss
-            acc1, acc5 = accuracy(output, target, topk=(1, 5))
+            acc1, acc5 = accuracy(output, target, topk=(1, 2))
             losses.update(loss.item(), images.size(0))
             top1.update(acc1[0], images.size(0))
             top5.update(acc5[0], images.size(0))

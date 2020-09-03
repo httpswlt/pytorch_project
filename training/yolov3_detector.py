@@ -7,7 +7,7 @@ import torch
 from tensorboardX import SummaryWriter
 from torch import nn
 
-from test.yolov3_test import test
+from validate.yolov3_validate import test
 from training import Detector
 from numba import jit
 

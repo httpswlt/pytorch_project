@@ -59,7 +59,7 @@ class ClassifyData(DataBases):
     
     def collate_fn(self, batch):
         imgs, targets = list(zip(*batch))
-        new_targets = torch.tensor(targets)
+        new_targets = torch.tensor(targets, dtype=torch.long)
         images = torch.tensor(imgs, dtype=torch.float32)
         images = images.permute(0, 3, 1, 2).contiguous()
         return images, new_targets
