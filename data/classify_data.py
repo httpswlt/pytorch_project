@@ -77,7 +77,7 @@ class PrepareData(ImageFactory):
         :return:
         """
         img = img.astype(np.float32) / 255.0
-        img = cv2.resize(img, (self.img_w, self.img_h))
+        img = cv2.resize(img, self.img_size)
         return img, targets
 
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     # data_path = '~/data/object/voc/VOCdevkit/VOC2012'
     data_path = '~/datasets/VOC/VOCdevkit/VOC2007'
     prepare_data = PrepareData()
-    prepare_data.set_image_size(img_w=600, img_h=200)
+    prepare_data.set_image_size((600, 200))
     data_set = ClassifyData(data_path, prepare_data)
     from torch.utils.data import DataLoader
     

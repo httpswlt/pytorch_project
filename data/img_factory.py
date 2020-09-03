@@ -20,15 +20,17 @@ class ImageFactory:
         self.exposure = None
         self.img_size = None
         self.flip = None
-        self.img_w = None
-        self.img_h = None
 
     def __call__(self, *any):
         return self.run(*any)
     
-    def set_image_size(self, img_w, img_h):
-        self.img_w = int(img_w)
-        self.img_h = int(img_h)
+    def set_image_size(self, img_size):
+        """
+        
+        :param img_size: e.g.: (w, h)
+        :return:
+        """
+        self.img_size = img_size
         
     def set_attribute(self, parameters):
         for parameter in parameters:
