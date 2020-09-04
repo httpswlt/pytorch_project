@@ -1,7 +1,14 @@
 # coding:utf-8
 import sys
+import os
 
-sys.path.append('../')
+dir_path = os.path.abspath(__file__)
+pro_path = os.path.abspath(os.path.join(dir_path, '..', '..', '..'))
+if dir_path not in sys.path:
+    sys.path.insert(0, dir_path)
+if pro_path not in sys.path:
+    sys.path.insert(0, pro_path)
+print(sys.path)
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
@@ -10,6 +17,7 @@ import torch.nn.parallel
 import torch.optim
 from torch.utils.data import DataLoader
 import os
+
 os.environ.setdefault('CUDA_VISIBLE_DEVICES', '2')
 # from classify.datasets import load_imagenet_data
 from classify.utils import validate
@@ -52,13 +60,14 @@ def run(config):
     # load data
     prepare_data = PrepareData()
     prepare_data.set_image_size((600, 200))
-    train_sets = ClassifyData(config['data_path'], prepare_data)
+    train_sets = ClassifyData(os.path.join(config['data_path'], 'train'), prepare_data)
+    val_sets = ClassifyData(os.path.join(config['data_path'], 'val'), prepare_data)
     
     train_loader = DataLoader(train_sets, config['batch_size'], shuffle=True,
                               num_workers=config['num_workers'], pin_memory=True,
                               collate_fn=train_sets.collate_fn)
-    # val_loader = DataLoader(val_sets, config['batch_size'], shuffle=False, num_workers=config['num_workers'],
-    #                         pin_memory=True)
+    val_loader = DataLoader(val_sets, config['batch_size'], shuffle=False, num_workers=config['num_workers'],
+                            pin_memory=True, collate_fn=train_sets.collate_fn)
     
     best_acc1 = 0
     # start training
@@ -70,7 +79,7 @@ def run(config):
         # train for per epoch
         print('Epoch: [{}/{}], Lr: {:.8f}'.format(epoch, config['epochs'], lr))
         # evaluate on validation set
-        acc1, acc5 = validate(train_loader, model, criterion)
+        acc1, acc5 = validate(val_loader, model, criterion)
         if config['record']:
             with open('record.log', 'a') as f:
                 f.write('Epoch {}, lr {:.8f}, loss: {:.8f}, Acc@1 {:.8f}, Acc5@ {:.8f} \n'.
@@ -94,7 +103,7 @@ def main():
         'lr': 0.1,
         'momentum': 0.9,
         'weight_decay': 0.0005,
-        'batch_size': 2,
+        'batch_size': 8,
         'num_workers': 4,
         'epochs': 160,
         'warmup_epoch': 0,
@@ -110,5 +119,4 @@ def main():
 
 
 if __name__ == '__main__':
-    
     main()
