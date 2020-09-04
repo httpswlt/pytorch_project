@@ -32,8 +32,6 @@ class Classifier(BaseTraining):
         
         # switch to train mode
         self.model.train()
-        if self.cuda:
-            self.model.cuda()
         
         loss = 0
         end = time.time()

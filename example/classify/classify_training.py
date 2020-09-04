@@ -8,7 +8,6 @@ if dir_path not in sys.path:
     sys.path.insert(0, dir_path)
 if pro_path not in sys.path:
     sys.path.insert(0, pro_path)
-print(sys.path)
 import torch
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
@@ -18,7 +17,7 @@ import torch.optim
 from torch.utils.data import DataLoader
 import os
 
-os.environ.setdefault('CUDA_VISIBLE_DEVICES', '2')
+# os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
 # from classify.datasets import load_imagenet_data
 from classify.utils import validate
 from data.classify_data import ClassifyData, PrepareData
@@ -31,8 +30,9 @@ def run(config):
     torch.manual_seed(42)
     
     # create model
-    model = DarknetClassify(darknet53(), num_classes=3)
+    model = DarknetClassify(darknet53(), num_classes=3).cuda()
     
+    model = torch.nn.parallel.DataParallel(model)
     # define loss function
     criterion = nn.CrossEntropyLoss()
     
@@ -66,8 +66,9 @@ def run(config):
     train_loader = DataLoader(train_sets, config['batch_size'], shuffle=True,
                               num_workers=config['num_workers'], pin_memory=True,
                               collate_fn=train_sets.collate_fn)
-    val_loader = DataLoader(val_sets, config['batch_size'], shuffle=False, num_workers=config['num_workers'],
-                            pin_memory=True, collate_fn=train_sets.collate_fn)
+    val_loader = DataLoader(val_sets, config['batch_size'], shuffle=False,
+                            num_workers=config['num_workers'], pin_memory=True,
+                            collate_fn=train_sets.collate_fn)
     
     best_acc1 = 0
     # start training
@@ -94,8 +95,7 @@ def run(config):
                 'best_acc1': best_acc1,
                 'optimizer': optimizer.state_dict(),
             }, config['model_path'].format(epoch, best_acc1, loss))
-        lr_scheduler.step(epoch)
-        dist.barrier()
+        lr_scheduler.step()
 
 
 def main():
@@ -103,18 +103,19 @@ def main():
         'lr': 0.1,
         'momentum': 0.9,
         'weight_decay': 0.0005,
-        'batch_size': 8,
-        'num_workers': 4,
+        'batch_size': 60,
+        'num_workers': 20,
         'epochs': 160,
         'warmup_epoch': 0,
         'burn_in': 2000,
         
         'record': True,
-        "model_path": "./model_lars_{}_{}_{}.checkpoint",
+        "model_path": "./weights/model_{}_{}_{}.checkpoint",
         "data_path": "/home/lintaowx/data/st/60",
         "resume_path": ""
         
     }
+    print(config)
     run(config)
 
 
