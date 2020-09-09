@@ -65,14 +65,14 @@ class Bottleneck(BaseBone):
         return out
 
 
-class DarknetClassify(BaseBone):
-    def __init__(self, backbone, in_channel=1024, num_classes=1000):
-        super(DarknetClassify, self).__init__()
+class DarknetClassifier(BaseBone):
+    def __init__(self, backbone, num_classes=1000):
+        super(DarknetClassifier, self).__init__()
         self.num_classes = num_classes
 
         self.backbone = backbone
         self.global_avg_pool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(in_channel, self.num_classes)
+        self.fc = nn.Linear(self.backbone.get_last_output_channels(), self.num_classes)
         self.initialize_weights_xavier_normal()
 
     def forward(self, x):
@@ -98,5 +98,5 @@ if __name__ == '__main__':
     inputs = torch.ones((1, 3, 256, 256)).cuda()
     model = darknet53().cuda()
     model(inputs)
-    darknet = DarknetClassify(model).cuda()
+    darknet = DarknetClassifier(model).cuda()
     print(darknet)

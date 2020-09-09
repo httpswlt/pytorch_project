@@ -21,7 +21,7 @@ import os
 # from classify.datasets import load_imagenet_data
 from data.classify_data import ClassifyData, PrepareData
 from backbone.darknet import DarknetClassify, darknet53
-from training import Classifier
+from training import ClassifierTraining
 
 
 def run(config):
@@ -50,7 +50,7 @@ def run(config):
         model.load_state_dict(checkpoint['state_dict'])
     
     # set the trainer
-    classifier = Classifier()
+    classifier = ClassifierTraining()
     classifier.set_model(model)
     classifier.set_criteria(criterion)
     classifier.set_optimizer(optimizer)
