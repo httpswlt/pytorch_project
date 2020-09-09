@@ -8,9 +8,9 @@ from classify.utils import accuracy, AverageMeter, ProgressMeter
 from training import BaseTraining
 
 
-class Classifier(BaseTraining):
+class ClassifierTraining(BaseTraining):
     def __init__(self):
-        super(Classifier, self).__init__()
+        super(ClassifierTraining, self).__init__()
         self.model = None
         self.criteria = nn.CrossEntropyLoss()
 

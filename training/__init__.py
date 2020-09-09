@@ -1,6 +1,6 @@
 # coding:utf-8
 from .base_training import BaseTraining
-from .detector import Detector
-from .classifier import Classifier
-from .bayes_classifier import BayesClassifier
+from .detector import DetectorTraining
+from .classifier import ClassifierTraining
+from .bayes_classifier import BayesClassifierTraining
 from .yolov3_detector import Yolov3Detecor

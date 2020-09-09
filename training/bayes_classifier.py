@@ -3,14 +3,14 @@ import time
 import torch
 
 from classify.utils import accuracy, AverageMeter, ProgressMeter
-from training import Classifier
+from training import ClassifierTraining
 import torchbnn as bnn
 import numpy as np
 
 
-class BayesClassifier(Classifier):
+class BayesClassifierTraining(ClassifierTraining):
     def __init__(self):
-        super(BayesClassifier, self).__init__()
+        super(BayesClassifierTraining, self).__init__()
         self.model = None
         self.kl_weight = 0.1
         self.kl_loss = bnn.BKLLoss()

@@ -2,9 +2,9 @@
 from training import BaseTraining
 
 
-class Detector(BaseTraining):
+class DetectorTraining(BaseTraining):
     def __init__(self):
-        super(Detector, self).__init__()
+        super(DetectorTraining, self).__init__()
         self.header = None
         self.anchors = None
         self.backbone = None

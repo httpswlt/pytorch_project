@@ -12,9 +12,9 @@ from training import Detector
 from numba import jit
 
 
-class Yolov3Detecor(Detector):
+class Yolov3DetecorTraining(Detector):
     def __init__(self):
-        super(Yolov3Detecor, self).__init__()
+        super(Yolov3DetecorTraining, self).__init__()
         self.best_loss = float('inf')
         self.best_map_iou80 = float(0)
         self.best_map_iou50 = float(0)
