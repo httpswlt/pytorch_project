@@ -42,6 +42,9 @@ class ClassifierTraining(BaseTraining):
         for i, (images, target) in enumerate(train_loader):
             # measure data loading time
             data_time.update(time.time() - end)
+            if self.cuda:
+                images = images.cuda()
+                target = target.cuda()
             output, loss = self._step_update(images, target)
 
             # measure accuracy and record loss
@@ -81,6 +84,9 @@ class ClassifierTraining(BaseTraining):
         with torch.no_grad():
             end = time.time()
             for i, (images, target) in enumerate(val_loader):
+                if self.cuda:
+                    images = images.cuda()
+                    target = target.cuda()
                 output, loss = self._step_update(images, target)
 
                 # measure accuracy and record loss
@@ -102,10 +108,6 @@ class ClassifierTraining(BaseTraining):
         return top1.avg, top5.avg
 
     def _step_update(self, images, target):
-        if self.cuda:
-            images = images.cuda()
-            target = target.cuda()
-
         # compute output
         output = self.model(images)
         loss = self.criteria(output, target)

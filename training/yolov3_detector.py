@@ -8,11 +8,11 @@ from tensorboardX import SummaryWriter
 from torch import nn
 
 from validate.yolov3_validate import test
-from training import Detector
+from training import DetectorTraining
 from numba import jit
 
 
-class Yolov3DetecorTraining(Detector):
+class Yolov3DetecorTraining(DetectorTraining):
     def __init__(self):
         super(Yolov3DetecorTraining, self).__init__()
         self.best_loss = float('inf')

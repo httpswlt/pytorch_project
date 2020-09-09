@@ -25,10 +25,6 @@ class BayesClassifierTraining(ClassifierTraining):
         self.kl_loss = kl_loss
 
     def _step_update(self, images, target):
-        if self.cuda:
-            images = images.cuda()
-            target = target.cuda()
-
         # compute output
         output = self.model(images)
         classify_loss = self.criteria(output, target)
@@ -62,11 +58,14 @@ class BayesClassifierTraining(ClassifierTraining):
         for i, (images, target) in enumerate(train_loader):
             # measure data loading time
             data_time.update(time.time() - end)
+            if self.cuda:
+                images = images.cuda()
+                target = target.cuda()
 
             output, classify_loss, kl_loss, loss = self._step_update(images, target)
 
             # measure accuracy and record loss
-            acc1 = accuracy(output, target, topk=(1, 2))
+            acc1 = accuracy(output, target, topk=(1, ))[0]
             classify_losses.update(classify_loss.item(), images.size(0))
             kl_losses.update(kl_loss.item(), images.size(0))
             top1.update(acc1[0], images.size(0))
@@ -104,10 +103,13 @@ class BayesClassifierTraining(ClassifierTraining):
         with torch.no_grad():
             end = time.time()
             for i, (images, target) in enumerate(val_loader):
+                if self.cuda:
+                    images = images.cuda()
+                    target = target.cuda()
                 output, classify_loss, kl_loss, loss = self._step_update(images, target)
 
                 # measure accuracy and record loss
-                acc1 = accuracy(output, target, topk=(1,))
+                acc1 = accuracy(output, target, topk=(1,))[0]
                 classify_losses.update(classify_loss.item(), images.size(0))
                 kl_losses.update(kl_loss.item(), images.size(0))
                 top1.update(acc1[0], images.size(0))
