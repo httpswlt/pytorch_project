@@ -2,8 +2,8 @@
 import os
 import random
 
-data_path = '/home/lintaowx/data/st/60'
-val_num = 1000
+data_path = '/home/lintaowx/data/st_middle/120'
+val_num = 14000
 train_path = os.path.join(data_path, 'train')
 val_path = os.path.join(data_path, 'val')
 os.makedirs(train_path, exist_ok=True)
