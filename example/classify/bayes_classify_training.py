@@ -21,7 +21,7 @@ import torch.optim
 from torch.utils.data import DataLoader
 import os
 
-# os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
+os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
 # from classify.datasets import load_imagenet_data
 from data.classify_data import ClassifyData, PrepareData
 from backbone.vgg import VGG, VGGClassifier
@@ -33,8 +33,8 @@ def run(config):
     torch.manual_seed(42)
 
     # create model
-    backbone = VGG('vgg16', batch_normal=True, bayes=True)
-    model = VGGClassifier(backbone=backbone, num_classes=3, bayes=True).cuda()
+    backbone = VGG('vgg11', batch_normal=False, bayes=True)
+    model = VGGClassifier(backbone=backbone, num_classes=config['classes_num'], bayes=True).cuda()
 
     model = torch.nn.parallel.DataParallel(model)
     # define loss function
@@ -63,7 +63,7 @@ def run(config):
 
     # load data
     prepare_data = PrepareData()
-    prepare_data.set_image_size((600, 200))
+    prepare_data.set_image_size(config['image_size'])
     train_sets = ClassifyData(os.path.join(config['data_path'], 'train'), prepare_data)
     val_sets = ClassifyData(os.path.join(config['data_path'], 'val'), prepare_data)
 
@@ -104,18 +104,19 @@ def run(config):
 
 def main():
     config = {
-        'lr': 0.001,
+        'lr': 0.01,
         'momentum': 0.9,
         'weight_decay': 0.0005,
-        'batch_size': 6,
+        'batch_size': 9,
         'num_workers': 20,
         'epochs': 160,
-        'warmup_epoch': 0,
-        'burn_in': 2000,
-
+        
+        'image_size': (250, 85),
+        'classes_num': 2,
+        
         'record': True,
         "model_path": "./weights/model_{}_{}_{}.checkpoint",
-        "data_path": "/home/lintao/data/st/60",
+        "data_path": "/home/lintaowx/data/st_middle/120",
         "resume_path": ""
 
     }
