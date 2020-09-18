@@ -21,7 +21,7 @@ import torch.optim
 from torch.utils.data import DataLoader
 import os
 
-os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
+# os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
 # from classify.datasets import load_imagenet_data
 from data.classify_data import ClassifyData, PrepareData
 from backbone.vgg import VGG, VGGClassifier
@@ -33,7 +33,7 @@ def run(config):
     torch.manual_seed(42)
 
     # create model
-    backbone = VGG('vgg11', batch_normal=False, bayes=True)
+    backbone = VGG('vgg16', batch_normal=True, bayes=True)
     model = VGGClassifier(backbone=backbone, num_classes=config['classes_num'], bayes=True).cuda()
 
     model = torch.nn.parallel.DataParallel(model)
@@ -104,14 +104,14 @@ def run(config):
 
 def main():
     config = {
-        'lr': 0.01,
+        'lr': 0.001,
         'momentum': 0.9,
         'weight_decay': 0.0005,
-        'batch_size': 9,
+        'batch_size': 12,
         'num_workers': 20,
-        'epochs': 160,
+        'epochs': 200,
         
-        'image_size': (250, 85),
+        'image_size': (500, 170),
         'classes_num': 2,
         
         'record': True,
