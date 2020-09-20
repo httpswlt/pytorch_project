@@ -141,7 +141,7 @@ class BayesClassifierTraining(ClassifierTraining):
         aleatorics = []
 
         for i in range(t):  # for t batches
-            net_out, _ = self.model(images[i].cuda())
+            net_out = self.model(images[i].cuda())
             net_outs.append(net_out)
             if normalized:
                 prediction = torch.nn.functional.softplus(net_out)
