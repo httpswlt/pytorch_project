@@ -101,7 +101,8 @@ def run(config):
                 'state_dict': model.state_dict(),
                 'best_acc1': best_acc1,
                 'optimizer': optimizer.state_dict(),
-            }, config['model_path'].format(epoch, best_acc1.item(), loss.item()))
+            }, os.path.join(config['model_path'],
+                            'model_{}_{}_{}.checkpoint'.format(epoch, best_acc1.item(), loss.item())))
         lr_scheduler.step()
 
 
@@ -113,12 +114,12 @@ def main():
         'batch_size': 12,
         'num_workers': 0,
         'epochs': 200,
-        
+
         'image_size': (500, 170),
         'classes_num': 2,
-        
+
         'record': True,
-        "model_path": "./weights/model_{}_{}_{}.checkpoint",
+        "model_path": "./weights",
         "data_path": "/home/lintaowx/data/st_middle/120",
         "resume_path": ""
 
