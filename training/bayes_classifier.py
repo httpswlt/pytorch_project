@@ -90,11 +90,9 @@ class BayesClassifierTraining(ClassifierTraining):
         classify_losses = AverageMeter('Classify_Loss', ':.4e')
         kl_losses = AverageMeter('KL_Loss', ':.4e')
         top1 = AverageMeter('Acc@1', ':6.2f')
-        alea = AverageMeter('Alea', ':6.2f')
-        epis = AverageMeter('Epis', ':6.2f')
         progress = ProgressMeter(
             len(val_loader),
-            [batch_time, classify_losses, kl_losses, top1, alea, epis],
+            [batch_time, classify_losses, kl_losses, top1],
             prefix='Test: ')
 
         # switch to evaluate mode
@@ -116,8 +114,6 @@ class BayesClassifierTraining(ClassifierTraining):
 
                 # measure the uncertainty
                 preds, aleatoric, epistemic = self.compute_uncertainty(images)
-                alea.update(aleatoric, images.size(0))
-                epis.update(epistemic, images.size(0))
 
                 # measure elapsed time
                 batch_time.update(time.time() - end)
@@ -126,10 +122,9 @@ class BayesClassifierTraining(ClassifierTraining):
                 if i % 10 == 0:
                     progress.display(i)
 
-            print(' * Acc@1 {top1.avg:.3f}, Aleatoric {alea.avg:.3f }, Epistemic {epis.avg:.3f}'
-                  .format(top1=top1, alea=alea, epis=epis))
+            print(' * Acc@1 {top1.avg:.3f}'.format(top1=top1))
 
-        return top1.avg, alea.avg, epis.avg
+        return top1.avg
 
     def compute_uncertainty(self, images, normalized=True, t=15):
         batch_predictions = []
@@ -150,7 +145,7 @@ class BayesClassifierTraining(ClassifierTraining):
                 prediction = torch.nn.functional.softmax(net_out, dim=1)
             batch_predictions.append(prediction)
 
-        for sample in range(images.shape[0]):
+        for sample in range(images.shape[1]):
             # for each sample in a batch
             pred = torch.cat([a_batch[sample].unsqueeze(0) for a_batch in net_outs], dim=0)
             pred = torch.mean(pred, dim=0)

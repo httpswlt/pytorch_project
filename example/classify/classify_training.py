@@ -20,7 +20,7 @@ import os
 # os.environ.setdefault('CUDA_VISIBLE_DEVICES', '1, 2, 3, 4, 5, 6, 7, 8, 9')
 # from classify.datasets import load_imagenet_data
 from data.classify_data import ClassifyData, PrepareData
-from backbone.darknet import DarknetClassify, darknet53
+from backbone.darknet import DarknetClassifier, darknet53
 from training import ClassifierTraining
 
 
@@ -29,7 +29,7 @@ def run(config):
     torch.manual_seed(42)
     
     # create model
-    model = DarknetClassify(darknet53(), num_classes=3).cuda()
+    model = DarknetClassifier(darknet53(), num_classes=3).cuda()
     
     model = torch.nn.parallel.DataParallel(model)
     # define loss function

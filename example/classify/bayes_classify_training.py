@@ -31,12 +31,15 @@ from training import BayesClassifierTraining
 def run(config):
     cudnn.benchmark = True
     torch.manual_seed(42)
+    # create some path
+    os.makedirs(config['model_path'], exist_ok=True)
 
     # create model
     backbone = VGG('vgg16', batch_normal=True, bayes=True)
     model = VGGClassifier(backbone=backbone, num_classes=config['classes_num'], bayes=True).cuda()
 
     model = torch.nn.parallel.DataParallel(model)
+    print(model)
     # define loss function
     criterion = nn.CrossEntropyLoss()
 
@@ -84,11 +87,11 @@ def run(config):
         # train for per epoch
         print('Epoch: [{}/{}], Lr: {:.8f}'.format(epoch, config['epochs'], lr))
         # evaluate on validation set
-        acc1, alea, epis = classifier.validate(val_loader)
+        acc1 = classifier.validate(val_loader)
         if config['record']:
             with open('record.log', 'a') as f:
-                f.write('Epoch {}, lr {:.8f}, loss: {:.8f}, Acc@1 {:.8f}, Alea@ {:.8f}, Epis@ {:.8f}  \n'.
-                        format(epoch, lr, loss, acc1, alea, epis))
+                f.write('Epoch {}, lr {:.8f}, loss: {:.8f}, Acc@1 {:.8f}\n'.
+                        format(epoch, lr, loss.item(), acc1.item()))
         is_best = acc1 > best_acc1
         best_acc1 = max(acc1, best_acc1)
         # remember best acc@1 and save checkpoint
@@ -98,7 +101,7 @@ def run(config):
                 'state_dict': model.state_dict(),
                 'best_acc1': best_acc1,
                 'optimizer': optimizer.state_dict(),
-            }, config['model_path'].format(epoch, best_acc1, loss))
+            }, config['model_path'].format(epoch, best_acc1.item(), loss.item()))
         lr_scheduler.step()
 
 
@@ -108,7 +111,7 @@ def main():
         'momentum': 0.9,
         'weight_decay': 0.0005,
         'batch_size': 12,
-        'num_workers': 20,
+        'num_workers': 0,
         'epochs': 200,
         
         'image_size': (500, 170),

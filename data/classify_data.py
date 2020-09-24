@@ -36,7 +36,6 @@ class ClassifyData(DataBases):
             for image in os.listdir(class_path):
                 image = image.strip().split('\n')[0]
                 self.img_files.append([os.path.join(class_path, image), i])
-        self.img_files = self.img_files[:100]
         self.img_files = np.array(self.img_files)
         np.random.shuffle(self.img_files)
         self.img_files = self.img_files.T
